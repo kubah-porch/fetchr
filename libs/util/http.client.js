@@ -172,6 +172,17 @@ function doXhr(method, url, headers, data, config, callback) {
     io(url, options);
 }
 
+function isError(statusCode) {
+    return (statusCode >= 400 && statusCode < 600) || statusCode === 0;
+}
+
+function createError(response) {
+    var message = (typeof response.body === "string" ? response.body : false) || "Request Error";
+    var error = new Error(message);
+    error.statusCode = response.statusCode;
+    return error;
+}
+
 function io(url, options) {
     xhr({
         url: url,
@@ -180,6 +191,9 @@ function io(url, options) {
         headers: options.headers,
         body: options.data
     }, function (err, r, body) {
+        if (isError(r.statusCode)) {
+            err = createError(r);
+        }
         if (err) {
             options.on.failure.call(r.rawRequest, err, body);
         } else {
