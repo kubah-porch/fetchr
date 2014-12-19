@@ -195,7 +195,7 @@ function io(url, options) {
             err = createError(r);
         }
         if (err) {
-            options.on.failure.call(r.rawRequest, err, body);
+            options.on.failure.call(r.rawRequest, null, r.rawRequest);
         } else {
             options.on.success.call(r.rawRequest, null, body);
         }
